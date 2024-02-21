@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const Test = require('../models/Test'); // Adjust the path based on your file structure
+const BookRepository = require('../repositories/BookRepository');
 
 
 /* GET home page. */
@@ -23,6 +24,24 @@ router.get('/test-mongo', async (req, res) => {
 
     // Fetch the saved document (or all documents from the 'Test' collection)
     const savedDoc = await Test.find({ });
+
+    // Return the fetched document in the response
+    res.json(savedDoc);
+  } catch (error) {
+    console.error('Error interacting with MongoDB:', error);
+    res.status(500).json({ message: 'Error interacting with MongoDB', error: error.message });
+  }
+});
+
+router.get('/test2', async (req, res) => {
+  try {
+    // Create a new document from the Test model
+    const testDoc = await BookRepository.getInstance().create({ message: 'Hello from MongoDB!'+(Date.now()) });
+
+
+
+    // Fetch the saved document (or all documents from the 'Test' collection)
+    const savedDoc = await BookRepository.getInstance().index();
 
     // Return the fetched document in the response
     res.json(savedDoc);
